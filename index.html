@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Halaman Prank</title>
+    <style>
+      /* Mengatur halaman agar berwarna putih dan konten berada di tengah */
+      body {
+        background-color: #ffffff;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: sans-serif;
+        overflow: hidden;
+      }
+
+      /* Gaya untuk tombol */
+      button {
+        padding: 15px 30px;
+        font-size: 24px;
+        font-weight: bold;
+        color: black;
+        background-color: #f0f0f0;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #e0e0e0;
+      }
+
+      /* Gaya untuk pesan tebal (disembunyikan secara default) */
+      #prankMessage {
+        display: none;
+        font-size: 36px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Tombol awal -->
+    <button id="prankButton">click here</button>
+
+    <!-- Pesan yang akan muncul saat fullscreen -->
+    <div id="prankMessage">To exit fullscreen mode, please press Esc on your keyboard.</div>
+
+    <script>
+      const button = document.getElementById('prankButton');
+      const message = document.getElementById('prankMessage');
+      let isFullscreenPrankActive = false;
+
+      // Ketika tombol diklik, masuk ke mode fullscreen
+      button.addEventListener('click', () => {
+        const elem = document.documentElement;
+
+        // Meminta akses fullscreen
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          /* IE11 */
+          elem.msRequestFullscreen();
+        }
+
+        isFullscreenPrankActive = true;
+
+        // Sembunyikan tombol dan tampilkan pesan tebal
+        button.style.display = 'none';
+        message.style.display = 'block';
+      });
+
+      // Mendeteksi ketika tombol ESC ditekan
+      document.addEventListener('keydown', (event) => {
+        if (isFullscreenPrankActive && event.key === 'Escape') {
+          // Mencoba memblokir fungsi keluar fullscreen (browser modern tetap akan mengizinkan keluar)
+          event.preventDefault();
+
+          // Redirect langsung ke apple.com dengan jeda waktu 200 milidetik
+          setTimeout(() => {
+            window.location.href = 'https://www.apple.com';
+          }, 10);
+        }
+      });
+
+      // Event listener tambahan: Jika browser mendeteksi perubahan state fullscreen
+      // (saat ESC ditekan dan browser memaksa keluar), langsung jalankan redirect.
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && isFullscreenPrankActive) {
+          setTimeout(() => {
+            window.location.href = 'https://www.apple.com';
+          }, 10);
+        }
+      });
+    </script>
+  </body>
+</html>
